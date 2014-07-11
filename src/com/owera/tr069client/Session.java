@@ -130,12 +130,12 @@ public class Session implements Runnable {
 			//			httpHandler = new HttpHandler(args);
 			while (!stop) {
 				//			if (args.getProvUrl().indexOf("https") > -1)
-				httpHandler = new HttpHandler(args);
+        status = new Status();
+				httpHandler = new HttpHandler(args, status);
 				TR069Client tr069Client = TR069ClientFactory.makeTR069Client();
 				httpHandler.setSerialNumber(tr069Client.getSerialNumberStr());
 				httpHandler.setSerialNumberInt(tr069Client.getSerialNumber());
 				NDC.push(tr069Client.getSerialNumberStr());
-				status = new Status();
 				TestCenter.getVerboseOutput().addStatus(status);
 				long startConv = System.currentTimeMillis();
 				long nextPITms = Long.MAX_VALUE;
@@ -156,7 +156,7 @@ public class Session implements Runnable {
 					}
 				} finally {
 					if (nextPITms == -1)
-						httpHandler = new HttpHandler(args);
+						httpHandler = new HttpHandler(args, status);
 					TR069ClientFactory.finishedSession(tr069Client);
 					long timeSpentOnConv = System.currentTimeMillis() - startConv - status.getRetrySleep();
 					if (logger.isDebugEnabled())
